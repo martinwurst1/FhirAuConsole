@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="FhirBundle.xml" />
+    <None Remove="FhirPackages\Bundle.zip" />
+    <None Remove="FhirPackages\de.basisprofil.r4-0.9.13.tgz" />
+    <None Remove="FhirPackages\hl7.fhir.r4.core-4.0.1.tgz" />
+    <None Remove="FhirPackages\kbv.basis-1.1.3.tgz" />
+    <None Remove="FhirPackages\kbv.ita.eau-1.0.2.tgz" />
+    <None Remove="FhirPackages\kbv.ita.for-1.0.3.tgz" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="FhirPackages\Bundle.zip" />
+    <EmbeddedResource Include="FhirPackages\de.basisprofil.r4-0.9.13.tgz" />
+    <EmbeddedResource Include="FhirPackages\hl7.fhir.r4.core-4.0.1.tgz" />
+    <EmbeddedResource Include="FhirPackages\kbv.basis-1.1.3.tgz" />
+    <EmbeddedResource Include="FhirPackages\kbv.ita.eau-1.0.2.tgz" />
+    <EmbeddedResource Include="FhirPackages\kbv.ita.for-1.0.3.tgz" />
+    <EmbeddedResource Include="FhirBundle.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Hl7.Fhir.R4" Version="4.3.0" />
+    <PackageReference Include="Hl7.Fhir.Specification.R4" Version="4.3.0" />
+    <PackageReference Include="SharpCompress" Version="0.32.2" />
+  </ItemGroup>
+
+</Project>
