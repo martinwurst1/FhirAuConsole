@@ -1,7 +1,7 @@
 <Bundle xmlns="http://hl7.org/fhir">
   <id value="5af39963-9272-4e2f-9dca-b917ba485ca1" />
   <meta>
-    <lastUpdated value="2020-02-03T12:30:02Z"/>
+    <lastUpdated value="2020-02-03T12:30:03Z"/>
     <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_Bundle|1.0.2" />
   </meta>
   <identifier>
