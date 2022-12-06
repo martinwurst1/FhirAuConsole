@@ -1,4 +1,12 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using System.Xml.Linq;
+using Hl7.Fhir.ElementModel.Types;
 using Hl7.Fhir.Model;
 using Hl7.Fhir.Specification.Source;
 
@@ -6,8 +14,29 @@ namespace FhirAuConsole.FHIR
 {
     public class LocalResourceResolver : IResourceResolver, IAsyncResourceResolver
     {
-        private readonly Dictionary<string, ResourceProxy> resourcen = new();
+        private readonly Dictionary<string, Dictionary<string, ResourceProxy>> resourcen = new();
         private readonly object lockObject = new();
+        private readonly object lockObjectVersion = new();
+
+        internal string CurrentBundleVersion
+        {
+            get
+            {
+                lock (this.lockObjectVersion)
+                {
+                    return this.currentBundleVersion;
+                }
+            }
+            set
+            {
+                lock (this.lockObjectVersion)
+                {
+                    this.currentBundleVersion = value;
+                }
+            }
+        }
+
+        private string currentBundleVersion;
 
         public void InitResources()
         {
@@ -15,10 +44,10 @@ namespace FhirAuConsole.FHIR
             {
                 void AddOrUpdate(string url, ResourceProxy resource)
                 {
-                    if (this.resourcen.ContainsKey(url))
-                        this.resourcen[url] = resource;
+                    if (this.resourcen[this.CurrentBundleVersion].ContainsKey(url))
+                        this.resourcen[this.CurrentBundleVersion][url] = resource;
                     else
-                        this.resourcen.Add(url, resource);
+                        this.resourcen[this.CurrentBundleVersion].Add(url, resource);
                 }
 
                 AddOrUpdate(resourceProxy.Url, resourceProxy);
@@ -27,10 +56,11 @@ namespace FhirAuConsole.FHIR
 
             lock (this.lockObject)
             {
-                if (this.resourcen.Any())
+                if (this.resourcen.ContainsKey(this.CurrentBundleVersion))
                     return;
 
-                var packageStreams = GetEmbeddedTarPackages();
+                this.resourcen.Add(this.CurrentBundleVersion, new());
+                var packageStreams = GetEmbeddedTarPackages(this.CurrentBundleVersion);
                 foreach (var stream in packageStreams)
                 {
                     var package = FhirPackage.Load(stream);
@@ -44,9 +74,22 @@ namespace FhirAuConsole.FHIR
             }
         }
 
-        private static List<Stream> GetEmbeddedTarPackages()
+        private static List<Stream> GetEmbeddedTarPackages(string version)
         {
-            var names = Assembly.GetExecutingAssembly().GetManifestResourceNames().Where(n => n.EndsWith(".tgz")).OrderBy(name => name);
+            var searchpattern = string.Empty;
+            switch (version)
+            {
+                case "1.0.2": searchpattern = "_1._0._2";
+                    break;
+                case "1.1.0": searchpattern = "_1._1._0";
+                    break;
+                default:
+                    throw new ArgumentException($"Es können keine FHIR-Bundles für Version {version} geladen werden.");
+            }
+            var names = Assembly.GetExecutingAssembly().GetManifestResourceNames().
+                Where(n => (n.Contains(searchpattern) && n.EndsWith(".tgz")) || 
+                           n.Contains("FhirPackages.Basis"));
+            
             return names.Select(name => Assembly.GetExecutingAssembly().GetManifestResourceStream(name)).ToList();
         }
 
@@ -69,25 +112,25 @@ namespace FhirAuConsole.FHIR
         public Resource ResolveByCanonicalUri(string uri)
         {
             this.InitResources();
-            return this.resourcen.TryGetValue(uri, out var resourceProxy) ? resourceProxy.Resource : null;
+            return this.resourcen[this.CurrentBundleVersion].TryGetValue(uri, out var resourceProxy) ? resourceProxy.Resource : null;
         }
 
         public Resource ResolveByUri(string uri)
         {
             this.InitResources();
-            return this.resourcen.TryGetValue(uri, out var resourceProxy) ? resourceProxy.Resource : null;
+            return this.resourcen[this.CurrentBundleVersion].TryGetValue(uri, out var resourceProxy) ? resourceProxy.Resource : null;
         }
 
         public Task<Resource> ResolveByUriAsync(string uri)
         {
             this.InitResources();
-            return System.Threading.Tasks.Task.FromResult(this.resourcen.TryGetValue(uri, out var resourceProxy) ? resourceProxy.Resource : null);
+            return System.Threading.Tasks.Task.FromResult(this.resourcen[this.CurrentBundleVersion].TryGetValue(uri, out var resourceProxy) ? resourceProxy.Resource : null);
         }
 
         public Task<Resource> ResolveByCanonicalUriAsync(string uri)
         {
             this.InitResources();
-            return System.Threading.Tasks.Task.FromResult(this.resourcen.TryGetValue(uri, out var resourceProxy) ? resourceProxy.Resource : null);
+            return System.Threading.Tasks.Task.FromResult(this.resourcen[this.CurrentBundleVersion].TryGetValue(uri, out var resourceProxy) ? resourceProxy.Resource : null);
         }
     }
 }

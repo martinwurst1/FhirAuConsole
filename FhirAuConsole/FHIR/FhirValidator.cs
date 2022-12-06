@@ -46,13 +46,24 @@ namespace FhirAuConsole.FHIR
                 return new List<string> { "Fehler beim Parsen" };
             }
             var settings = GetSettings();
+
+            var profile = geparstesXml.Meta.Profile.FirstOrDefault(p => p.StartsWith("https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU"));
+            if (profile == null)
+                return new List<string> {"Version nicht unterstützt."}; //TODO: Korrekte Meldung
+
+            var profileSplit = profile.Split('|');
+            var version = profileSplit.Length == 2 ? profileSplit[1] : "1.1.0";
+            if (resourceResolver is LocalResourceResolver resolver) 
+                resolver.CurrentBundleVersion = version;
+            if (terminologyService is LocalResourceResolver termService)
+                termService.CurrentBundleVersion = version;
             var validator = new Hl7.Fhir.Validation.Validator(settings);
             var result = validator.Validate(geparstesXml);
             return result.Success
                 ? new List<string>()
                 : result.Issue.Where(i => i.Severity != OperationOutcome.IssueSeverity.Information 
                                           && i.Severity != OperationOutcome.IssueSeverity.Warning)
-                    .Select(i => $"{i.Expression.FirstOrDefault()}: {i.Details.Text}")
+                    .Select(i => i.Details.Text)
                     .ToList();
         }
     }

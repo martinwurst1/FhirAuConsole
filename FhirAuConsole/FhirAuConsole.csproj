@@ -8,23 +8,33 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="FhirBundle.xml" />
+    <None Remove="FhirBundle102.xml" />
+    <None Remove="FhirBundle110.xml" />
+    <None Remove="FhirPackages\1.0.2\de.basisprofil.r4-0.9.13.tgz" />
+    <None Remove="FhirPackages\1.0.2\kbv.basis-1.1.3.tgz" />
+    <None Remove="FhirPackages\1.0.2\kbv.ita.eau-1.0.2.tgz" />
+    <None Remove="FhirPackages\1.0.2\kbv.ita.for-1.0.3.tgz" />
+    <None Remove="FhirPackages\1.1.0\de.basisprofil.r4-1.3.2.tgz" />
+    <None Remove="FhirPackages\1.1.0\kbv.basis-1.3.0.tgz" />
+    <None Remove="FhirPackages\1.1.0\kbv.ita.eau-1.1.0.tgz" />
+    <None Remove="FhirPackages\1.1.0\kbv.ita.for-1.1.0.tgz" />
+    <None Remove="FhirPackages\Basis\hl7.fhir.r4.core-4.0.1.tgz" />
     <None Remove="FhirPackages\Bundle.zip" />
-    <None Remove="FhirPackages\de.basisprofil.r4-0.9.13.tgz" />
-    <None Remove="FhirPackages\hl7.fhir.r4.core-4.0.1.tgz" />
-    <None Remove="FhirPackages\kbv.basis-1.1.3.tgz" />
-    <None Remove="FhirPackages\kbv.ita.eau-1.0.2.tgz" />
-    <None Remove="FhirPackages\kbv.ita.for-1.0.3.tgz" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="FhirPackages\1.0.2\de.basisprofil.r4-0.9.13.tgz" />
+    <EmbeddedResource Include="FhirPackages\1.0.2\kbv.basis-1.1.3.tgz" />
+    <EmbeddedResource Include="FhirPackages\1.0.2\kbv.ita.eau-1.0.2.tgz" />
+    <EmbeddedResource Include="FhirPackages\1.0.2\kbv.ita.for-1.0.3.tgz" />
+    <EmbeddedResource Include="FhirPackages\1.1.0\de.basisprofil.r4-1.3.2.tgz" />
+    <EmbeddedResource Include="FhirPackages\1.1.0\kbv.basis-1.3.0.tgz" />
+    <EmbeddedResource Include="FhirPackages\1.1.0\kbv.ita.eau-1.1.0.tgz" />
+    <EmbeddedResource Include="FhirPackages\1.1.0\kbv.ita.for-1.1.0.tgz" />
+    <EmbeddedResource Include="FhirPackages\Basis\hl7.fhir.r4.core-4.0.1.tgz" />
     <EmbeddedResource Include="FhirPackages\Bundle.zip" />
-    <EmbeddedResource Include="FhirPackages\de.basisprofil.r4-0.9.13.tgz" />
-    <EmbeddedResource Include="FhirPackages\hl7.fhir.r4.core-4.0.1.tgz" />
-    <EmbeddedResource Include="FhirPackages\kbv.basis-1.1.3.tgz" />
-    <EmbeddedResource Include="FhirPackages\kbv.ita.eau-1.0.2.tgz" />
-    <EmbeddedResource Include="FhirPackages\kbv.ita.for-1.0.3.tgz" />
-    <EmbeddedResource Include="FhirBundle.xml" />
+    <EmbeddedResource Include="FhirBundle102.xml" />
+    <EmbeddedResource Include="FhirBundle110.xml" />
   </ItemGroup>
 
   <ItemGroup>
